@@ -49,6 +49,36 @@ def save_meter_data(file="meters.json"):
     f.write(json.dumps(meters))
     f.close()
 
+import ast
+
+
+def safe_eval(expr):
+    try:
+        parsed = ast.parse(expr.strip(), mode="eval")
+        ops = {
+            ast.Add: lambda a, b: a + b,
+            ast.Sub: lambda a, b: a - b,
+            ast.Mult: lambda a, b: a * b,
+            ast.Div: lambda a, b: a / b,
+        }
+
+        def _eval_node(node):
+            if isinstance(node, ast.Expression):
+                return _eval_node(node.body)
+            if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+                return float(node.value)
+            if isinstance(node, ast.BinOp) and type(node.op) in ops:
+                return ops[type(node.op)](_eval_node(node.left), _eval_node(node.right))
+            if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.UAdd, ast.USub)):
+                val = _eval_node(node.operand)
+                return -val if isinstance(node.op, ast.USub) else val
+            raise ValueError("Unsupported operation")
+
+        return _eval_node(parsed)
+    except (SyntaxError, ValueError, ZeroDivisionError, TypeError):
+        return 0.0
+
+
 def main():
     record_reading("M-01", 120)
     record_reading("M-02", 640)
@@ -60,7 +90,7 @@ def main():
     print("Bill M-03: %.2f" % compute_bill("M-03", rates))
     print("Spikes:", flag_spikes())
     adjustment = input("Extra units for M-01 as an expression (Enter for 0): ") or "0"
-    record_reading("M-01", eval(adjustment))
+    record_reading("M-01", safe_eval(adjustment))
     save_meter_data()
     load_meter_data()
     print("Bill M-01 after reload: %.2f" % compute_bill("M-01", rates))
