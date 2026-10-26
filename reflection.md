@@ -4,6 +4,8 @@
 **Topic:** Static Code Analysis with Pylint, Flake8, and Bandit  
 **Project:** Energy Consumption & Tariff Calculator (`energy_system.py`)
 
+> **Note on the questions:** The lab handout itself is not included in the project folder (the README only says "the four reflection questions from the handout"). The question wording below was written to cover the four standard themes of this lab (tool comparison, false positives/negatives, static vs. dynamic testing, CI/CD integration). **Before submitting, replace each question heading with the exact wording from your handout** if it differs; the answers can stay as they are.
+
 ---
 
 ### Question 1: Tool Comparison & Detection Scopes

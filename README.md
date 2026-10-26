@@ -49,3 +49,32 @@ The code works, but only just. It has quality, style and security problems of th
 **Target:** aim for a Pylint score above 9.5 on your final file. A perfect 10.00/10 is very good.
 
 Be ready to explain the bugs you found and how you fixed them. You may be called on to present.
+
+---
+
+## How to run (final version)
+
+```bash
+pip install pylint bandit flake8
+python energy_system.py          # press Enter (or type e.g. 50*2+3) at the prompt
+```
+
+The expression prompt is evaluated with a safe AST-based parser (`safe_eval`), not `eval()`. Invalid input counts as 0 units. Readings are saved to `meters.json` (git-ignored).
+
+## How to run the analysis
+
+```bash
+pylint energy_system.py > pylint_report.txt
+bandit -r energy_system.py > bandit_report.txt
+flake8 energy_system.py > flake8_report.txt
+```
+
+## Results
+
+| Tool | Before | After |
+|------|--------|-------|
+| Pylint | 6.14/10 (`pylint_report_before.txt`) | 10.00/10 (`pylint_report_after.txt`) |
+| Bandit | 1 Medium issue, B307 `eval` (`bandit_report_before.txt`) | 0 issues (`bandit_report_after.txt`) |
+| Flake8 | 12 violations (`flake8_report_before.txt`) | 0 violations (`flake8_report_after.txt`) |
+
+Fixes were committed per tool (Bandit, Flake8, Pylint). See `issues.md` for the issue table and `reflection.md` for the reflection answers.
